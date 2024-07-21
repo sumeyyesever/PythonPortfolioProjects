@@ -18,6 +18,8 @@ def open_image():
         canvas.image = img_tk
 
 
+
+
 def open_property_window():
     property_window = Toplevel(window)
     property_window.title("Property")
@@ -30,34 +32,79 @@ def open_property_window():
     entry.focus()
     entry.grid(row=0, column=1)
 
-    font_dict = {
-        'Arial 14': font.Font(family='Arial', size=14),
-        'Courier 12': font.Font(family='Courier', size=12),
-        'Times 16': font.Font(family='Times', size=16),
-        'Helvetica 10 bold': font.Font(family='Helvetica', size=10, weight='bold'),
-     }
+
 
     font_label = Label(property_window, text="Font")
     font_label.grid(row=1, column=0)
 
-    n = StringVar()
-    choose_font = ttk.Combobox(property_window, textvariable=n)
-    choose_font["values"] = ("Arial", "Courier", "Times New Roman", "Helvetica")
+    choose_font = ttk.Combobox(property_window)
+    choose_font["values"] = ("Arial", "Courier", "Times", "Helvetica")
+    choose_font.current(0)
     choose_font.grid(row=1, column=1)
-    choose_font.current(1)
 
     color_label = Label(property_window, text="Color")
     color_label.grid(row=2, column=0)
 
-    choose_color = ttk.Combobox(property_window, textvariable=n)
+    choose_color = ttk.Combobox(property_window)
     choose_color["values"] = ("Black", "Red", "Blue", "Green", "Purple")
+    choose_color.current(0)
     choose_color.grid(row=2, column=1)
 
     font_size_label = Label(property_window, text="Size")
     font_size_label.grid(row=3, column=0)
 
-    scale_font = Scale(property_window, from_=5, to=30, orient=HORIZONTAL)
+    scale_var = IntVar()
+
+    scale_font = Scale(property_window, from_=5, to=30, orient=HORIZONTAL, variable=scale_var)
     scale_font.grid(row=3, column=1)
+
+    main_label = Label(text="")
+
+
+
+
+    def show_changes():
+        font_dict = {
+            'Arial': font.Font(family='Arial', size=scale_var.get()),
+            'Courier': font.Font(family='Courier', size=scale_var.get()),
+            'Times': font.Font(family='Times', size=scale_var.get()),
+            'Helvetica': font.Font(family='Helvetica', size=scale_var.get(), weight='bold'),
+        }
+
+        window_label = canvas.create_window(160, 280, window=main_label)
+        combo_font = choose_font.get()
+        font_name = font_dict[combo_font]
+        main_label.config(text=entry.get(), font=font_name, fg=choose_color.get())
+
+        def delete_changes():
+            canvas.delete(window_label)
+
+        def close_property():
+            canvas.delete(window_label)
+            property_window.destroy()
+
+
+        delete_button = Button(property_window, text="Delete the Changes", command=delete_changes)
+        delete_button.grid(row=5, column=0)
+
+        property_window.protocol("WM_DELETE_WINDOW", close_property)
+
+
+
+
+
+
+    show_button = Button(property_window, text="Show the Changes", command=show_changes)
+    show_button.grid(row=4, column=0)
+
+    save_button = Button(property_window, text="Save the Changes")
+    save_button.grid(row=4, column=1)
+
+
+
+
+
+
 
 
 # creating a new window
