@@ -1,131 +1,114 @@
 from tkinter import *
-from tkinter import Toplevel, font, filedialog, ttk
-from PIL import Image, ImageTk
+from tkinter import Toplevel, filedialog, messagebox
+from PIL import Image, ImageTk, ImageDraw, ImageFont
 
 
-def open_image():
+class WaterMarkApp:
+    def __init__(self, window):
+        self.window = window
+        self.window.title("Image Watermarking")
+        self.window.minsize(width=500, height=500)
 
-    file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif")])
+        self.load_button = Button(self.window, text="Load Image", command=self.load_image)
+        self.load_button.pack()
 
-    if file_path:
-        img = Image.open(file_path)
-        img = img.resize((300, 300))
+        self.watermark_button = Button(self.window, text="Add WaterMark", command=self.open_property_window)
+        self.watermark_button.pack()
 
-        # convert image object to tkphoto object
-        img_tk = ImageTk.PhotoImage(img)
+        self.save_button = Button(self.window, text="Save Image", command=self.save_image)
+        self.save_button.pack()
 
-        canvas.create_image(150,150, image=img_tk)
-        canvas.image = img_tk
+        self.canvas = Canvas(self.window)
+        self.canvas.pack()
 
+        self.image = None
 
+    def load_image(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif")])
+        if file_path:
+            self.image = Image.open(file_path)
+            self.image = self.image.resize((350, 350))
+            self.display_image(self.image)
 
+    def display_image(self, image):
+        tk_image = ImageTk.PhotoImage(image)
+        self.canvas.config(width=image.width, height=image.height)
+        self.canvas.create_image(0, 0, anchor=NW, image=tk_image)
+        self.canvas.image = tk_image
 
-def open_property_window():
-    property_window = Toplevel(window)
-    property_window.title("Property")
-    property_window.minsize(width=200, height=100)
+    def save_image(self):
+        if self.image:
+            save_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png"),
+                                                                                         ("JPEG files", "*.jpg;*.jpeg")])
+            if save_path:
+                self.image.save(save_path)
+                messagebox.showinfo("Info", "Image saved successfully")
+        else:
+            messagebox.showwarning("Warning", "No image to save.")
 
-    text_label = Label(property_window, text="Text")
-    text_label.grid(row=0, column=0)
+    def open_property_window(self):
+        if self.image:
+            def radio_used():
+                radio_color = ()
+                if radio_state.get() == 1:
+                    radio_color = (255, 255, 255)
+                else:
+                    radio_color = (0, 0, 0)
+                return radio_color
 
-    entry = Entry(property_window, textvariable=shared_var)
-    entry.focus()
-    entry.grid(row=0, column=1)
+            def show_changes():
+                copy_image = self.image.copy()
+                width, height = copy_image.size
+                draw = ImageDraw.Draw(copy_image)
+                font_path = "fonts/Montserrat-VariableFont_wght.ttf"
+                font_size = 30
+                img_font = ImageFont.truetype(font_path, font_size)
+                bbox = draw.textbbox((0, 0), text.get("1.0", END), font=img_font)
+                text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
 
+                x = width - text_width - 10
+                y = height - text_height - 10
 
+                text_color = radio_used()
 
-    font_label = Label(property_window, text="Font")
-    font_label.grid(row=1, column=0)
+                draw.text((x, y), text.get("1.0", END), fill=text_color, font=img_font)
+                self.display_image(copy_image)
 
-    choose_font = ttk.Combobox(property_window)
-    choose_font["values"] = ("Arial", "Courier", "Times", "Helvetica")
-    choose_font.current(0)
-    choose_font.grid(row=1, column=1)
+            def delete_changes():
+                self.display_image(self.image)
 
-    color_label = Label(property_window, text="Color")
-    color_label.grid(row=2, column=0)
+            property_window = Toplevel(self.window)
+            property_window.config(padx=20, pady=20)
+            property_window.title("Property")
+            property_window.minsize(width=200, height=100)
 
-    choose_color = ttk.Combobox(property_window)
-    choose_color["values"] = ("Black", "Red", "Blue", "Green", "Purple")
-    choose_color.current(0)
-    choose_color.grid(row=2, column=1)
+            text_label = Label(property_window, text="Watermark")
+            text_label.grid(row=0, column=0, columnspan=2)
 
-    font_size_label = Label(property_window, text="Size")
-    font_size_label.grid(row=3, column=0)
+            text = Text(property_window, width=15, height=1)
+            text.focus()
+            text.grid(row=0, column=2, columnspan=4)
 
-    scale_var = IntVar()
+            color_label = Label(property_window, text="Color")
+            color_label.grid(row=1, column=0, columnspan=2)
 
-    scale_font = Scale(property_window, from_=5, to=30, orient=HORIZONTAL, variable=scale_var)
-    scale_font.grid(row=3, column=1)
+            radio_state = IntVar()
+            radio_button_white = Radiobutton(property_window, text="White", value=1, variable=radio_state, command=radio_used)
+            radio_button_black = Radiobutton(property_window, text="Black", value=2, variable=radio_state, command=radio_used)
+            radio_button_white.grid(row=1, column=2, columnspan=2)
+            radio_button_black.grid(row=1, column=4, columnspan=2)
 
-    main_label = Label(text="")
+            show_button = Button(property_window, text="Show Changes", command=show_changes)
+            show_button.grid(row=2, column=0, columnspan=3)
 
-
-
-
-    def show_changes():
-        font_dict = {
-            'Arial': font.Font(family='Arial', size=scale_var.get()),
-            'Courier': font.Font(family='Courier', size=scale_var.get()),
-            'Times': font.Font(family='Times', size=scale_var.get()),
-            'Helvetica': font.Font(family='Helvetica', size=scale_var.get(), weight='bold'),
-        }
-
-        window_label = canvas.create_window(160, 280, window=main_label)
-        combo_font = choose_font.get()
-        font_name = font_dict[combo_font]
-        main_label.config(text=entry.get(), font=font_name, fg=choose_color.get())
-
-        def delete_changes():
-            canvas.delete(window_label)
-
-        def close_property():
-            canvas.delete(window_label)
-            property_window.destroy()
-
-
-        delete_button = Button(property_window, text="Delete the Changes", command=delete_changes)
-        delete_button.grid(row=5, column=0)
-
-        property_window.protocol("WM_DELETE_WINDOW", close_property)
-
-
-
-
-
-
-    show_button = Button(property_window, text="Show the Changes", command=show_changes)
-    show_button.grid(row=4, column=0)
-
-    save_button = Button(property_window, text="Save the Changes")
-    save_button.grid(row=4, column=1)
-
-
-
-
-
-
-
-
-# creating a new window
-window = Tk()
-window.title("Image Watermarking")
-window.minsize(width=500, height=500)
-
-shared_var = StringVar()
-
-label_hello = Label(text="Hello")
-label_hello.grid(row=0, column=1)
+            delete_button = Button(property_window, text="Delete Changes", command=delete_changes)
+            delete_button.grid(row=2, column=3, columnspan=3)
+        else:
+            messagebox.showwarning("Warning", "Load an image first")
 
 
-canvas = Canvas(window, width=350, height=350)
-canvas.grid(row=1, column=2)
+if __name__ == "__main__":
+    window = Tk()
+    app = WaterMarkApp(window)
+    window.mainloop()
 
-
-img_button = Button(text="Choose Image", command=open_image)
-img_button.grid(row=2, column=1)
-
-prop_button = Button(text="Add WaterMark", command=open_property_window)
-prop_button.grid(row=3, column=1)
-
-window.mainloop()
