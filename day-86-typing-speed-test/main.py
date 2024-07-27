@@ -1,10 +1,10 @@
 from tkinter import *
+from tkinter import scrolledtext
 import math
 
 
 class TypingTest:
     def __init__(self, root):
-        self.key_counter = 0
         self.window = root
         self.window.title("Typing Test")
         self.window.minsize(width=900, height=500)
@@ -17,18 +17,30 @@ class TypingTest:
         self.timer_button = Button(self.window, text="Start Timer", command=self.start_timer)
         self.timer_button.pack()
 
-        self.test_text = Text(self.window, height=5, width=50)
-        self.test_text.insert("1.0", "Hello")
+        with open("sample_text.txt") as file:
+            contents = file.read()
+
+        self.test_text = scrolledtext.ScrolledText(self.window, wrap=WORD, height=2, width=80)
+        self.test_text.insert("1.0", contents)
         self.test_text.config(state="disabled")
         self.test_text.pack(pady=10)
 
-        self.typing_area = Text(self.window, height=5, width=50)
+        self.typing_area = Text(self.window, height=5, width=82)
+        self.typing_area.focus()
         self.typing_area.bind("<KeyRelease>", self.key_release)
 
         self.calculate_area = Label(self.window, text="")
 
-    def count_down(self, count):
+    def start_timer(self):
+        self.timer_button.pack_forget()
+        self.typing_area.delete("1.0", "end")
+        self.test_text.tag_remove("highlight", "1.0", END)
+        self.test_text.tag_remove("correct", "1.0", END)
+        self.calculate_area.pack_forget()
+        self.typing_area.pack()
+        self.count_down(60)
 
+    def count_down(self, count):
         count_minute = math.floor(count / 60)
         count_second = count % 60
         if count_second < 10:
@@ -39,19 +51,14 @@ class TypingTest:
             timer = self.window.after(1000, self.count_down, count-1)
         else:
             self.calculate_score()
-
-    def start_timer(self):
-        self.typing_area.pack()
-        self.count_down(10)
+            self.timer_button.pack()
 
     def calculate_score(self):
         self.calculate_area.pack(pady=30)
         typing_word = self.typing_area.get("1.0", END).strip()
         test_word = self.test_text.get("1.0", END).strip()
         typing_word_array = typing_word.split(" ")
-        print(typing_word_array)
         test_word_array = test_word.split(" ")
-        print(test_word_array)
         correct_words = []
         wrong_words = []
         correct_characters_in_wrong = ""
@@ -69,23 +76,19 @@ class TypingTest:
                 correct_words.append(typing_word_array[i])
 
         correct_word_string = "".join(correct_words)
-        print(correct_word_string)
-        print(len(correct_word_string))
-        print(correct_characters_in_wrong)
         total_correct = len(correct_word_string) + len(correct_characters_in_wrong)
-
-        print(f"Your word score:{len(correct_words)}/{len(test_word_array)}")
-        print(f"Your character score: {total_correct}")
 
         total_correct_words = len(correct_words)
         total_words = len(test_word_array)
-        calculate_label_text = f"{total_correct_words} WPM {total_correct} CPM \nYour word score:{total_correct_words}/{total_words} \nYour character score: {total_correct}"
+        calculate_label_text = (f"{total_correct_words} WPM ----- {total_correct} CPM \nYour word score: "
+                                f"{total_correct_words}/{total_words} \nYour character score: {total_correct}")
 
-        self.calculate_area.config(text=calculate_label_text)
+        self.calculate_area.config(text=calculate_label_text, font=("Arial", 20, "bold"), bg="darkslategray",
+                                   fg="lightslategray")
 
     def key_release(self, event):
-        typing_word = self.typing_area.get("1.0", END).strip()
-        test_word = self.test_text.get("1.0", END).strip()
+        typing_word = self.typing_area.get("1.0", "end-1c").strip()
+        test_word = self.test_text.get("1.0", "end-1c").strip()
 
         # clear highlights
         self.test_text.tag_remove("highlight", "1.0", END)
@@ -108,6 +111,8 @@ class TypingTest:
                 end_index = f"1.{i + 1}"
                 self.test_text.tag_add("correct", start_index, end_index)
                 self.test_text.tag_config("correct", foreground="black")
+        new_line_end_index = f"1.{len(typing_word)+20}"
+        self.test_text.see(new_line_end_index)
 
 
 root = Tk()
