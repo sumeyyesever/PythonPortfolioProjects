@@ -1,7 +1,7 @@
 from turtle import Turtle
 import random
 
-BRICK_COLOR = ["yellow", "red", "blue", "purple"]
+BRICK_COLOR = ["skyblue", "hotpink", "darkgreen", "purple"]
 
 
 class Brick(Turtle):

@@ -1,15 +1,21 @@
 import random
+import time
 from turtle import Screen
 from paddle import Paddle
 from brick import Brick
 from ball import Ball
-import time
+from livesboard import LivesBoard
+
 
 screen = Screen()
 screen.title("Breakout")
 screen.bgcolor("black")
 screen.setup(width=800, height=500)
 screen.tracer(0)
+
+# create live count board
+lives_board = LivesBoard()
+lives_board.create_board()
 
 # create the paddle and manage it's moving
 paddle = Paddle()
@@ -56,13 +62,18 @@ while game_is_on:
     if ball.ycor() <= -240:
         ball.hideturtle()
         ball = Ball()
-        print("boooo")
+        lives_board.update_live_count()
+        lives_board.create_board()
+
+        # if there is no life to play stop the game
+        if lives_board.live == 0:
+            game_is_on = False
+
         ball.move()
 
     # detecting of ball's collision with bricks
     for brick in bricks_array:
         if ball.distance(brick) < 37 and ball.ycor() >= 35:
-            print("collision")
             ball.bounce_x()
             brick.hideturtle()
             bricks_array.remove(brick)
