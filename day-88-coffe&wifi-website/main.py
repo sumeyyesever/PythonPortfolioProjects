@@ -43,11 +43,18 @@ with app.app_context():
 def home():
     return render_template("index.html")
 
+
 @app.route("/cafes")
 def show_cafes():
     result = db.session.execute(db.select(Cafe).order_by(Cafe.name)).scalars()
     all_cafes_list = result.all()
     return render_template("cafes.html", cafes=all_cafes_list)
+
+
+@app.route("/cafe/<int:cafe_id>")
+def show_single_cafe(cafe_id):
+    requested_cafe = db.get_or_404(Cafe, cafe_id)
+    return render_template("cafe.html", cafe=requested_cafe)
 
 
 if __name__ == "__main__":
