@@ -1,11 +1,11 @@
 {% include "header.html" %}
 
         <!-- Header-->
-        <header class="bg-dark py-5">
+        <header class=" py-5" style="background-color: #C8CFA0">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Shop in style</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
+                    <h1 class="display-4 fw-bolder">Local Coffee Shops</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Work and Caffeine</p>
                 </div>
             </div>
         </header>
@@ -21,7 +21,7 @@
                         <div class="card h-100">
                             <!-- Product image-->
 
-                            <img class="card-img-top" src="{{ cafe.img_url }}" alt="..." />
+                            <a href="{{ cafe.map_url }}"><img class="card-img-top" src="{{ cafe.img_url }}" alt="..."/></a>
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
@@ -30,16 +30,16 @@
                                     {{ cafe.location }}
                                      <div class="d-flex justify-content-center small text-warning mb-2">
                                         {% if cafe.has_sockets %}
-                                         <div class="bi bi-plug-fill me-2" style="font-size: 1.5em; color:#4e94ce"></div>
+                                         <div class="bi bi-plug-fill me-2" style="font-size: 1.5em; color:#78ABA8"></div>
                                          {% endif %}
                                          {% if cafe.has_wifi %}
-                                        <div class="bi bi-wifi me-2" style="font-size: 1.5em; color:#4e94ce"></div>
+                                        <div class="bi bi-wifi me-2" style="font-size: 1.5em; color:#78ABA8"></div>
                                          {% endif %}
                                          {% if cafe.has_toilet %}
-                                        <div class="bi bi-badge-wc-fill me-2" style="font-size: 1.5em; color:#4e94ce"></div>
+                                        <div class="bi bi-badge-wc-fill me-2" style="font-size: 1.5em; color:#78ABA8"></div>
                                          {% endif %}
                                          {% if cafe.can_take_calls %}
-                                        <div class="bi bi-telephone-fill" style="font-size: 1.5em; color:#4e94ce"></div>
+                                        <div class="bi bi-telephone-fill" style="font-size: 1.5em; color:#78ABA8"></div>
                                          {% endif %}
                                     </div>
                                     <!-- Product price-->

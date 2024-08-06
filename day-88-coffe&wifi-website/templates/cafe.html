@@ -1,7 +1,7 @@
 {% include "header.html" %}
 
 <!-- Header-->
-        <header class="py-5 bg-dark">
+        <header class="py-5" style="background-color: #78ABA8">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
                     <h1 class="display-4 fw-bolder">{{ cafe.name }}</h1>
@@ -40,9 +40,10 @@
 
                         </div>
                         <div class="col ">
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                ✗ Delete Cafe
-                            </button>
+                            <a class="btn btn-outline-dark flex-shrink-0" type="button" href="{{url_for('delete_cafe', delete_cafe_id=cafe.id) }}">
+✗ Delete Cafe
+                                  </a>
+
                         </div>
                     </div>
                 </div>
