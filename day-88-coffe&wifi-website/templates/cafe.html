@@ -1,0 +1,56 @@
+{% include "header.html" %}
+
+<!-- Header-->
+        <header class="py-5" style="background-color: #78ABA8">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">{{ cafe.name }}</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">{{ cafe.location }}</p>
+                </div>
+            </div>
+        </header>
+
+
+
+<section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{ cafe.img_url }}" alt="..." /></div>
+                    <div class="row col-md-6">
+                        <div class="small mb-1">{{ cafe.location }}</div>
+                        <h1 class="display-5 fw-bolder">{{ cafe.name }}</h1>
+                        <div class="col fs-5 mb-5 ">
+                            {% if cafe.has_sockets %}
+                                         <div class="bi bi-plug-fill me-2" style="font-size: 1em; color:black"><span> Power Sockets</span></div>
+                                         {% endif %}
+                                         {% if cafe.has_wifi %}
+                                        <div class="bi bi-wifi me-2" style="font-size: 1em; color:black"><span> Stable Wifi</span></div>
+                                         {% endif %}
+                                         {% if cafe.has_toilet %}
+                                        <div class="bi bi-badge-wc-fill me-2" style="font-size: 1em; color:black"><span> Restrooms</span></div>
+                                         {% endif %}
+                                         {% if cafe.can_take_calls %}
+                                        <div class="bi bi-telephone-fill" style="font-size: 1em; color:black"><span> Video/Audiocalls</span></div>
+                                         {% endif %}
+                                        <div class="bi bi-cup-fill" style="font-size: 1em; color:black"><span> {{ cafe.seats }} Seats</span></div>
+
+
+                            <div class="bi bi-sun-fill" style="font-size: 1em; color:black"><span> Natural Light</span></div>
+
+
+                        </div>
+                        <div class="col ">
+                            <a class="btn btn-outline-dark flex-shrink-0" type="button" href="{{url_for('delete_cafe', delete_cafe_id=cafe.id) }}">
+✗ Delete Cafe
+                                  </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+{% include "footer.html" %}
