@@ -1,0 +1,25 @@
+body{
+    background-color: #EEEEEE;
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-right: 9px;
+}
+
+.form-check-label{
+    font-size: 18px;
+
+}
+
+.form-check-input:checked + .form-check-label {
+     text-decoration: line-through;
+}
+
+h1 {
+    font-family: "Edu VIC WA NT Beginner", cursive;
+    font-optical-sizing: auto;
+    font-weight: <weight>;
+    font-style: normal;
+}
