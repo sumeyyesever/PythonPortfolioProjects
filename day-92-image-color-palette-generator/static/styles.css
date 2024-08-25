@@ -1,0 +1,70 @@
+main{
+    margin-top: 50px;
+    flex: 1;
+}
+
+form{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+img{
+    width: 400px;
+    height: 400px;
+    object-fit: contain;
+}
+
+footer{
+    margin-top: 50px;
+}
+
+footer a{
+  color: black;
+  text-decoration: none;
+  border-bottom: 1px dotted black;
+}
+
+.cover-container {
+    min-height: 100vh;
+}
+
+.header-title{
+    font-family: "Permanent Marker", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.upload-container{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.container{
+    margin-top: 20px;
+}
+
+.btn{
+    width: 17%;
+}
+
+.spans{
+    display: flex;
+    margin: 10px 0px;
+    gap: 30px;
+}
+
+.hex-span{
+    display: inline-block;
+}
+
+.color-span{
+    display: inline-block;
+    width: 40px;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
